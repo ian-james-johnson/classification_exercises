@@ -4,3 +4,4 @@ env.py
 __pycache__
 titanic_df.csv
 iris_df.csv
+*.csv
