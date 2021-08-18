@@ -40,13 +40,7 @@ def new_iris_data():
     This function reads the Iris data from the Codeup db into a df
     '''
     sql_query= """
-    select
-    species_id,
-    species_name,
-    sepal_length,
-    sepal_width,
-    petal_length,
-    petal_width
+    select *
     from measurements
     join species using(species_id)
     """
@@ -61,4 +55,11 @@ def get_iris_data():
         df.to_csv('iris_df.csv')
     return df
 
-    
+def prep_iris(df):
+    iris_df = df.drop(columns = ['species_id', 'measurement_id'])
+    iris_df = iris_df.rename(columns= {'species_name':'species'})
+    dummy_df= pd.get_dummies(iris_df['species'], dummy_na = False, drop_first=False)
+    iris_df= pd.concat([iris_df, dummy_df], axis=1)
+    train, test = train_test_split(iris_df, test_size=0.2, random_state=1349, stratify=iris_df.species)
+    train, validate = train_test_split(train, train_size=0.7, random_state=1349, stratify=train.species)
+    return train, validate, test
